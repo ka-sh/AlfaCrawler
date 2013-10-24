@@ -1,12 +1,15 @@
 package org.crawler.user.servicesImplemtation;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.util.Map;
 
-import org.crawler.exception.userservicesexceptions.ConnectionProplemException;
-import org.crawler.exception.userservicesexceptions.WrongCredentialException;
+import org.crawler.exceptions.JsoupExecuteException;
+import org.crawler.exceptions.userservicesexceptions.ConnectionProplemException;
+import org.crawler.exceptions.userservicesexceptions.WrongCredentialException;
 import org.crawler.keywords.LoginKeywords;
+import org.crawler.keywords.WebsiteLinks;
 import org.crawler.user.services.LoginService;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -19,19 +22,6 @@ public class LoginServiceImpl implements LoginService {
 	/** Reply of the login post request */
 	private Response response;
 
-	/** Holding account information used for connection */
-	private UserLoginAccount accountInfo;
-
-	/**
-	 * LoginService constructor
-	 * 
-	 * @param accountINfo
-	 *            account information required for logging to the site.
-	 * */
-	public LoginServiceImpl(final UserLoginAccount accountINfo) {
-		this.accountInfo = accountINfo;
-	}
-
 	/**
 	 * Implementation of login service
 	 * 
@@ -39,19 +29,20 @@ public class LoginServiceImpl implements LoginService {
 	 * 
 	 * */
 	public Map<String, String> login() throws ConnectionProplemException,
-			IOException, WrongCredentialException {
+			WrongCredentialException, JsoupExecuteException {
 		Connection connection = initLoginConnection();
 		try {
 			response = connection.execute();
-			//Checking response
+			// Checking response
 			checkResponse();
-			
+
+		} catch (ConnectException |UnknownHostException ex) {
+			// UnknownHostException thrown when there is no connection
+			throw new ConnectionProplemException(ex.getMessage()
+					+ " Check your Internet Connection.", ex.getCause());
+
 		} catch (IOException e) {
-			if (e instanceof UnknownHostException) {
-				throw new ConnectionProplemException(e.getMessage()
-						+ " Check your Internet Connection.", e.getCause());
-			}
-			throw e;
+			throw new JsoupExecuteException(e.getMessage(), e.getCause());
 
 		}
 
@@ -65,25 +56,30 @@ public class LoginServiceImpl implements LoginService {
 	 * @return Connection connection object used to get login response.
 	 * */
 	private final Connection initLoginConnection() {
-		Connection connection = Jsoup.connect(accountInfo.getLoginUrl());
-		connection.data(LoginKeywords.USERNAME.keyword(),
-				accountInfo.getUsername(), LoginKeywords.PASSWORD.keyword(),
-				accountInfo.getPassword());
+		Connection connection = Jsoup.connect(WebsiteLinks.LOGIN.value());
+		connection.data(LoginKeywords.USERNAME.value(),
+				UserLoginAccount.getUsername(), LoginKeywords.PASSWORD.value(),
+				UserLoginAccount.getPassword());
 		// Setting up Max size to get full page
 		connection.maxBodySize(0);
 		// Setting up the user browser configuration
-		connection.userAgent(accountInfo.getUserAgent());
+		connection.userAgent(UserLoginAccount.getUserAgent());
+		connection.referrer(WebsiteLinks.REFERE.value());
 		connection.method(Method.POST);
 
 		return connection;
 	}
-	
+
 	/**
-	 * checkResponse check login response for any errors and if found it throws corresponding exception
-	 * @throws WrongCredentialException  in case of wrong username or password
+	 * checkResponse check login response for any errors and if found it throws
+	 * corresponding exception
+	 * 
+	 * @throws WrongCredentialException
+	 *             in case of wrong username or password
 	 * */
-	private void checkResponse() throws WrongCredentialException{
-		if(response.body().toLowerCase().contains(LoginKeywords.WrongUserOrPassword.keyword())){
+	private void checkResponse() throws WrongCredentialException {
+		if (response.body().toLowerCase()
+				.contains(LoginKeywords.WrongUserOrPassword.value())) {
 			throw new WrongCredentialException("Wrong username or password.");
 		}
 	}

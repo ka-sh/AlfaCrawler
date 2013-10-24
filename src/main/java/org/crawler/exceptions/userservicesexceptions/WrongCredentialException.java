@@ -1,4 +1,4 @@
-package org.crawler.exception.userservicesexceptions;
+package org.crawler.exceptions.userservicesexceptions;
 
 import org.crawler.exceptions.CrawlerException;
 
@@ -10,7 +10,7 @@ import org.crawler.exceptions.CrawlerException;
 public class WrongCredentialException extends CrawlerException {
 
 	/**
-	 * 
+	 * Generated serial ID
 	 */
 	private static final long serialVersionUID = -4786391014307842947L;
 

@@ -8,7 +8,7 @@ package org.crawler.exceptions;
 public class CrawlerException extends Exception {
 
 	/**
-	 * 
+	 * Generated serial ID
 	 */
 	private static final long serialVersionUID = -5626926799320360148L;
 

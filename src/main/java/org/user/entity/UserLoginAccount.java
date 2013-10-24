@@ -8,18 +8,20 @@ package org.user.entity;
  * @author Kareem El-Shahawe
  * */
 public class UserLoginAccount {
-	private String username;
-	private String password;
-	private String loginUrl;
-	private String userAgent;
+	/** User username */
+	private static String USERNAME;
+	/** User password */
+	private static String PASSWORD;
+	/** User browser Agent */
+	private static String USERAGENT;
 
 	/**
 	 * Retrieve username used to login to the target site
 	 * 
 	 * @return username account
 	 * */
-	public final String getUsername() {
-		return username;
+	public static final String getUsername() {
+		return USERNAME;
 	}
 
 	/**
@@ -28,8 +30,8 @@ public class UserLoginAccount {
 	 * @param username
 	 *            used for login
 	 */
-	public void setUsername(final String username) {
-		this.username = username;
+	public static void setUsername(final String username) {
+		USERNAME = username;
 	}
 
 	/**
@@ -37,8 +39,8 @@ public class UserLoginAccount {
 	 * 
 	 * @return password used to login to the target site
 	 * */
-	public final String getPassword() {
-		return password;
+	public static final String getPassword() {
+		return PASSWORD;
 	}
 
 	/**
@@ -47,27 +49,8 @@ public class UserLoginAccount {
 	 * @param password
 	 *            password used to login to the target site.
 	 * */
-	public void setPassword(final String password) {
-		this.password = password;
-	}
-
-	/**
-	 * Retrieve the URL of the target website
-	 * 
-	 * @return target website URL
-	 * */
-	public final String getLoginUrl() {
-		return loginUrl;
-	}
-
-	/**
-	 * Set target website URL
-	 * 
-	 * @param loginUrl
-	 *            URL of the target website.
-	 * */
-	public void setLoginUrl(final String loginUrl) {
-		this.loginUrl = loginUrl;
+	public static void setPassword(final String password) {
+		PASSWORD = password;
 	}
 
 	/**
@@ -75,8 +58,8 @@ public class UserLoginAccount {
 	 * 
 	 * @return user browser agent configuration.
 	 * */
-	public final String getUserAgent() {
-		return userAgent;
+	public static final String getUserAgent() {
+		return USERAGENT;
 	}
 
 	/**
@@ -85,8 +68,8 @@ public class UserLoginAccount {
 	 * @param userAgent
 	 *            user browser agent configuration
 	 * */
-	public void setUserAgent(final String userAgent) {
-		this.userAgent = userAgent;
+	public static void setUserAgent(final String userAgent) {
+		USERAGENT = userAgent;
 	}
 
 }
